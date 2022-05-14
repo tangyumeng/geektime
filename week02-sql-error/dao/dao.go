@@ -8,6 +8,13 @@ import (
 	"github.com/pkg/errors"
 )
 
+// DROP TABLE IF EXISTS `users`;
+// CREATE TABLE `users` (
+//   `id` int NOT NULL AUTO_INCREMENT,
+//   `name` char(100) DEFAULT NULL,
+//   PRIMARY KEY (`id`)
+// ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
 type User struct {
 	Id   int
 	Name string
