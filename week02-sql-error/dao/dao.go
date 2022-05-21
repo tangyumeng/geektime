@@ -1,11 +1,13 @@
 package dao
 
+//
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/pkg/errors"
 )
 
 // DROP TABLE IF EXISTS `users`;
@@ -19,6 +21,9 @@ type User struct {
 	Id   int
 	Name string
 }
+
+var NotFoundCode = 400001
+var OtherErrorCode = 500001
 
 var db *sql.DB
 var err error
@@ -43,10 +48,17 @@ func QueryUserByID(id int) (User, error) {
 	err = stmt.QueryRow(id).Scan(&u.Id, &u.Name)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return u, errors.Wrap(err, "QueryUserByID failed")
+			// return u, errors.Wrap(err, "QueryUserByID failed")
+			return u, fmt.Errorf("%d not found", NotFoundCode)
+		} else {
+			return u, fmt.Errorf("%d not found", OtherErrorCode)
 		}
 	}
 	return u, nil
+}
+
+func IsNoRow(err error) bool {
+	return strings.HasPrefix(err.Error(), fmt.Sprintf("%d", NotFoundCode))
 }
 
 func CloseDB() {
