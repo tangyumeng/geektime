@@ -38,7 +38,7 @@ func init() {
 	}
 }
 
-func QueryUserByID(id int) (User, error) {
+func QueryUserByID(id int) (*User, error) {
 	var u User
 	stmt, err := db.Prepare("select id, name from users where id = ?")
 	if err != nil {
@@ -49,12 +49,12 @@ func QueryUserByID(id int) (User, error) {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// return u, errors.Wrap(err, "QueryUserByID failed")
-			return u, fmt.Errorf("%d not found", NotFoundCode)
+			return nil, fmt.Errorf("%d not found", NotFoundCode)
 		} else {
-			return u, fmt.Errorf("%d not found", OtherErrorCode)
+			return nil, fmt.Errorf("%d not found", OtherErrorCode)
 		}
 	}
-	return u, nil
+	return &u, nil
 }
 
 func IsNoRow(err error) bool {
