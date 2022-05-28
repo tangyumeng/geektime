@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"log"
 
 	"example.com/dao"
@@ -20,13 +22,19 @@ func main() {
 	defer dao.CloseDB()
 
 	u, err := dao.QueryUserByID(1)
-	if dao.IsNoRow(err) { // 这里是sql NoRow error
-		log.Fatal(err)
-	} else if err != nil {
 
-	} else {
-		log.Println(u.Name)
+	if errors.Is(err, dao.NotFoundError) {
+		fmt.Println(err)
+		return
 	}
+
+	// if dao.IsNoRow(err) { // 这里是sql NoRow error
+	// 	log.Fatal(err)
+	// } else if err != nil {
+
+	// } else {
+	// 	log.Println(u.Name)
+	// }
 
 	log.Println("test: ", u.Id, u.Name)
 
